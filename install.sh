@@ -195,7 +195,7 @@ function initialiseApi() {
 
 ######################################
 function checkHosts() {
-    HOSTS='127.0.0.1 backend.le.shop le.shop view.le.shop api.le.shop'
+    HOSTS='127.0.0.1 backend.doomina doomina view.doomina api.doomina'
     if grep "${HOSTS}" /etc/hosts | grep -v '^#'; then
       echo "${HOSTS} уже присутствуют в /etc/hosts"
     else
@@ -203,12 +203,12 @@ function checkHosts() {
       output "${HOSTS} have been added successfully to /etc/hosts." success
     fi
     output "The sites are available at \n " info
-    output "backend.le.shop:20080 " info
-    output 'le.shop:20080 ' info
-    output 'view.le.shop:20080 ' info
-    output 'api.le.shop:20080 ' info
+    output "backend.doomina:20080 " info
+    output 'doomina:20080 ' info
+    output 'view.doomina:20080 ' info
+    output 'api.doomina:20080 ' info
     output 'Also a development server for Vuetify is running on: ' success
-    output 'view.le.shop:23000 ' info
+    output 'view.doomina:23000 ' info
 }
 
 
