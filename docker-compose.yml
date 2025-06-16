@@ -1,0 +1,95 @@
+version: '3.2'
+
+networks:
+  le_shop_network:
+    external: true
+
+services:
+
+  nginx:
+    container_name: le_shop_nginx
+    image: nginx:latest
+    ports:
+      - ${DOCKER_NGINX_PORT:-20080}:80
+    volumes:
+      - .:/var/www/le_shop
+      - ./docker/nginx/le_shop.conf:/etc/nginx/conf.d/le_shop.conf
+    depends_on:
+      - php
+    networks:
+      le_shop_network:
+        ipv4_address: ${LE_SHOP_DOCKER_NGINX_IP:-175.10.10.3}
+
+  php:
+#    image: php:8.1-fpm
+    container_name: le_shop_php
+    ports:
+      - ${DOCKER_PHP_PORT:-19000}:9000
+    build:
+      context: ./docker/php
+    volumes:
+      - .:/var/www/le_shop
+    working_dir: /var/www/le_shop
+    depends_on:
+      - pgsql
+    networks:
+      le_shop_network:
+        ipv4_address: ${LE_SHOP_DOCKER_PHP_IP:-175.10.10.4}
+
+  node:
+    container_name: le_shop_node
+#    command: bash -c "npm install; npm update && npm run build"
+    command: bash -c "npm run dev"
+    ports:
+      - ${DOCKER_NPM_PORT:-23000}:3000
+    image: node:18
+    volumes:
+      - ./le_view:/var/www/le_shop/le_view
+    working_dir: /var/www/le_shop/le_view
+    networks:
+      le_shop_network:
+        ipv4_address: ${LE_SHOP_DOCKER_NODE_IP:-175.10.10.7}
+
+
+  pgsql:
+    container_name: le_shop_pgsql
+    image: postgres:13.12
+    ports:
+      - ${DOCKER_PGSQL_PORT:-15432}:5432
+    environment:
+      - POSTGRES_DB=${LE_SHOP_DOCKER_DB_DB}
+      - POSTGRES_USER=${LE_SHOP_DOCKER_DB_USER}
+      - POSTGRES_PASSWORD=${LE_SHOP_DOCKER_DB_PASSWORD}
+      - POSTGRES_DB_TEST=${LE_SHOP_DOCKER_DB_TEST}
+      - TZ=GMT+2
+      - PGTZ=GMT+2
+    volumes:
+      - .:/var/www/le_shop
+      - le_shop_pg_data:/var/lib/postgresql/data:rw
+      - ./docker/postgres/entrypoint/:/docker-entrypoint-initdb.d/ # - можемо кидати потрібні ініціалізуючі скрипти
+    networks:
+      le_shop_network:
+        ipv4_address: ${LE_SHOP_DOCKER_PGSQL_IP:-175.10.10.6}
+
+
+  redis:
+    container_name: le_shop_redis
+    image: redis:latest
+#    restart: always
+    ports:
+      - ${DOCKER_REDIS_PORT:-16379}:6379
+    volumes:
+#      - /path/to/local/dаta:/root/redis
+      - ./docker/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_PASSWORD=${LE_SHOP_DOCKER_REDIS_PASSWORD}
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=16
+    networks:
+      le_shop_network:
+        ipv4_address: ${LE_SHOP_DOCKER_REDIS_IP:-175.10.10.5}
+
+volumes:
+  le_shop_pg_data:
+    external:
+      name: le_shop_pg_data

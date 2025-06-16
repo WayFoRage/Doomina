@@ -1,0 +1,10 @@
+suite_namespace: frontend\tests\unit
+actor: UnitTester
+modules:
+    enabled:
+        - Yii2:
+            part: [orm, email, fixtures]
+        - Asserts
+
+params:
+    - .env
