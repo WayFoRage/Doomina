@@ -2,7 +2,7 @@
     <a href="https://github.com/yiisoft" target="_blank">
         <img src="https://avatars0.githubusercontent.com/u/993323" height="100px">
     </a>
-    <h1 align="center">Welcome to the abomination called "Le Shop"</h1>
+    <h1 align="center">Welcome to the abomination called "Doomina CRM"</h1>
     <br>
 
 [//]: # (</p>)
@@ -12,7 +12,7 @@ The main carcass of the project is [Yii 2](http://www.yiiframework.com/) advance
 The template includes three tiers: front end, back end, and console, each of which
 is a separate Yii application.
 
-Le Shop also has Laravel framework in <code>api/</code> directory, which is supposed to provide 
+Doomina CRM also has Laravel framework in <code>api/</code> directory, which is supposed to provide 
 stateless REST api to the resources.
 
 In <code>le_view</code> directory you will find a Vuetify project.
@@ -21,7 +21,7 @@ When deployed in Docker, backend app, frontend app, Laravel API and
 Vuetify are hosted on the same server but different subdomains:
 
 <ol>
-    <li><code>backend.le.shop:20080</code> - an admin panel for Le Shop. Pure Yii, classic request-response model</li>
+    <li><code>backend.le.shop:20080</code> - an admin panel for Doomina CRM. Pure Yii, classic request-response model</li>
     <li><code>le.shop:20080</code> - a frontend Yii 2 tier of the project. Not developed at all, hence basically useless </li>
     <li><code>api.le.shop:20080</code> - RESTful (?) API built on Laravel. Some security concerns were too hard to implement
         myself, so they might have been omitted</li>
