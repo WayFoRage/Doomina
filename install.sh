@@ -77,18 +77,18 @@ function makeDocker() {
 
 function buildLeView() {
     docker-compose up -d node
-    docker exec le_shop_node /bin/bash -c "npm run build";
+    docker exec doomina_node /bin/bash -c "npm run build";
 }
 
 function installLeView() {
     docker-compose up -d node
-    docker exec le_shop_node /bin/bash -c "npm install; npm update && run build";
+    docker exec doomina_node /bin/bash -c "npm install; npm update && run build";
 }
 
 function buildLeShopPhp() {
     output "Setting up php with composer" info
 
-    docker exec le_shop_php /bin/bash -c "composer install --ignore-platform-reqs &&
+    docker exec doomina_php /bin/bash -c "composer install --ignore-platform-reqs &&
       php init --env=Development &&
       php yii migrate --interactive=0 &&
       php yii migrate-rbac --interactive=0 &&
@@ -102,7 +102,7 @@ function buildLeShopPhp() {
 function runUnits() {
     output "Running units" info
 
-    docker exec le_shop_php /bin/bash -c "php yii_test migrate --interactive=0 &&
+    docker exec doomina_php /bin/bash -c "php yii_test migrate --interactive=0 &&
         vendor/bin/codecept run unit -c frontend ;
         vendor/bin/codecept run unit -c backend ;
         vendor/bin/codecept run unit -c common
@@ -148,30 +148,30 @@ function generateUnitTest() {
 
     read -p "Enter the test name (e.g. model/LoginForm): " TEST_NAME
 
-    docker exec le_shop_php /bin/bash -c "vendor/bin/codecept --config=${CHOSEN_DIR} g:test unit ${TEST_NAME}
+    docker exec doomina_php /bin/bash -c "vendor/bin/codecept --config=${CHOSEN_DIR} g:test unit ${TEST_NAME}
     "
 
 }
 
 function initialiseApi() {
   output "updating laravel packages" info
-    docker exec le_shop_php bash -c "cd api && composer update"
+    docker exec doomina_php bash -c "cd api && composer update"
   output "updating laravel packages successful" success
 
   output "generating api laravel encryption key" info
-    docker exec le_shop_php bash -c "cd api && php artisan key:generate"
+    docker exec doomina_php bash -c "cd api && php artisan key:generate"
   output "key generation successful" success
 
   output "running laravel migrations" info
-    docker exec le_shop_php bash -c "cd api && php artisan migrate"
+    docker exec doomina_php bash -c "cd api && php artisan migrate"
   output "laravel migrations successful" success
 
   output "running laravel migrations" info
-    docker exec le_shop_php bash -c "cd api && php artisan migrate --database='pgsqlTest'"
+    docker exec doomina_php bash -c "cd api && php artisan migrate --database='pgsqlTest'"
   output "laravel migrations successful" success
 
   output "installing laravel passport" info
-    docker exec le_shop_php bash -c "cd api && php artisan passport:install"
+    docker exec doomina_php bash -c "cd api && php artisan passport:install"
   output "laravel passport installation successful" success
 
   sudo chmod -R 777 api/storage/logs
@@ -189,13 +189,13 @@ function initialiseApi() {
 #  output "oauth2 client created successfully" success
 #  output "remember to check the Vue AuthStore to include the right info" error
 
-  docker exec le_shop_php bash -c "cd .."
+  docker exec doomina_php bash -c "cd .."
 
 }
 
 ######################################
 function checkHosts() {
-    HOSTS='127.0.0.1 backend.le.shop le.shop view.le.shop api.le.shop'
+    HOSTS='127.0.0.1 backend.doomina doomina view.doomina api.doomina'
     if grep "${HOSTS}" /etc/hosts | grep -v '^#'; then
       echo "${HOSTS} уже присутствуют в /etc/hosts"
     else
@@ -203,12 +203,12 @@ function checkHosts() {
       output "${HOSTS} have been added successfully to /etc/hosts." success
     fi
     output "The sites are available at \n " info
-    output "backend.le.shop:20080 " info
-    output 'le.shop:20080 ' info
-    output 'view.le.shop:20080 ' info
-    output 'api.le.shop:20080 ' info
+    output "backend.doomina:20080 " info
+    output 'doomina:20080 ' info
+    output 'view.doomina:20080 ' info
+    output 'api.doomina:20080 ' info
     output 'Also a development server for Vuetify is running on: ' success
-    output 'view.le.shop:23000 ' info
+    output 'view.doomina:23000 ' info
 }
 
 
